@@ -4,23 +4,41 @@ def hours_minutes_seconds_counter():
     """
         hms is Hours-Minutes-Seconds
     """
-    hms = input("Input time with hours:minutes:seconds format to count down ! ")
-    while True:
-        hours_minutes_seconds = hms.split(":")
-
-        if len(hours_minutes_seconds[1]) != 2 or len(hours_minutes_seconds[2]) != 2 or not len(hours_minutes_seconds[0]) >= 2:
+    print("--- COUNTDOWN TIMER ---")
+    hms = input("Input time in HH:MM:SS format (for example -> 08:05:23): ")
+    print_method = input("Do you want to print the countdown with new lines? (y/n): ").strip().lower()
+    
+    try:
+        parts = hms.split(":")
+        if len(parts) != 3:
+            raise ValueError
             
-            print("Invalid time format, please try again :( ")
+        hours, minutes, seconds = map(int, parts)
+        
+        total_seconds = hours * 3600 + minutes * 60 + seconds
+        
+        if total_seconds <= 0:
+            print("Please enter a time greater than zero.")
             return hours_minutes_seconds_counter()
-        else:
-            loop_count = int(hours_minutes_seconds[0])*3600 + int(hours_minutes_seconds[1])*60 + int(hours_minutes_seconds[2])
 
-            for i in range(loop_count, 0, -1):
-                hours = i // 3600
-                minutes = (i % 3600) // 60
-                seconds = i % 60
-                time.sleep(1)
+        for i in range(total_seconds, 0, -1):
+            # I used integer division (//) to get the number of hours, minutes, and seconds from the total seconds.
+            h = i // 3600
+            m = (i % 3600) // 60
+            s = i % 60
+            
+            # I used f-string formatting to ensure that hours, minutes, and seconds are always displayed with two digits.
+            if print_method == "y":
+                print(f"{h:02d}:{m:02d}:{s:02d}")
+            else:
+            # I used end="\r" to overwrite the same line in the console, not to create new line
+                print(f"{h:02d}:{m:02d}:{s:02d}", end="\r")
+            time.sleep(1)
+            
+        print("00:00:00\nTime is up!!!")
 
-                print(f"{hours:02d}:{minutes:02d}:{seconds:02d}")
+    except ValueError:
+        print("Invalid format! Please use HH:MM:SS (for example -> 08:05:23).")
+        hours_minutes_seconds_counter()
 
 hours_minutes_seconds_counter()
